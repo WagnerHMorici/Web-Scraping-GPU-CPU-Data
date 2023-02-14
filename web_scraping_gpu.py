@@ -2,15 +2,19 @@ from bs4 import BeautifulSoup as bs
 
 import requests
 
+from datetime import datetime
 
-gpus = ['https://www.newegg.com/msi-geforce-rtx-4070-ti-rtx-4070-ti-gaming-x-trio-12g/p/N82E16814137771?Description=rtx&cm_re=rtx-_-14-137-771-_-Product&quicklink=true',
+from data_csv_writer import write_csv
+
+# Newegg
+gpus_newegg = ['https://www.newegg.com/msi-geforce-rtx-4070-ti-rtx-4070-ti-gaming-x-trio-12g/p/N82E16814137771?Description=rtx&cm_re=rtx-_-14-137-771-_-Product&quicklink=true',
 'https://www.newegg.com/gigabyte-geforce-rtx-4070-ti-gv-n407taero-oc-12gd/p/N82E16814932582?Description=rtx&cm_re=rtx-_-14-932-582-_-Product',
 'https://www.newegg.com/msi-geforce-rtx-4090-rtx-4090-gaming-x-trio-24g/p/N82E16814137761?Description=rtx&cm_re=rtx-_-14-137-761-_-Product&quicklink=true',
 'https://www.newegg.com/msi-geforce-rtx-4090-rtx-4090-suprim-liquid-x-24g/p/N82E16814137759?Description=rtx&cm_re=rtx-_-14-137-759-_-Product',
 ]
 
 
-cpus = ['https://www.newegg.com/amd-ryzen-7-5800x/p/N82E16819113665?Description=cpu&cm_re=cpu-_-19-113-665-_-Product',
+cpus_newegg = ['https://www.newegg.com/amd-ryzen-7-5800x/p/N82E16819113665?Description=cpu&cm_re=cpu-_-19-113-665-_-Product',
 'https://www.newegg.com/intel-core-i7-13700k-core-i7-13th-gen/p/N82E16819118414?Description=cpu&cm_re=cpu-_-19-118-414-_-Product&quicklink=true',
 'https://www.newegg.com/intel-core-i7-12700k-core-i7-12th-gen/p/N82E16819118343?Description=cpu&cm_re=cpu-_-19-118-343-_-Product',
 'https://www.newegg.com/intel-core-i9-13900k-core-i9-13th-gen/p/N82E16819118412?Description=cpu&cm_re=cpu-_-19-118-412-_-Product',
@@ -19,7 +23,7 @@ cpus = ['https://www.newegg.com/amd-ryzen-7-5800x/p/N82E16819113665?Description=
 
 
 def get_data_from_url(url):
-    
+    print(url)
     # Get url and html
     try:
         raw_data = requests.get(url)
@@ -55,15 +59,21 @@ def get_data_from_url(url):
    
 
     data = {
-        'Product': product_name,
-        'Price': f"${product_price.text}",
-        'Information': product_info}
+        'product': product_name,
+        'price': f"${product_price.text}",
+        'information': product_info,
+        'url': url,
+        'time': datetime.now()}
     
     return data
 
 
 
 # Print Urls data
-for url in cpus:
+data_list = []
+for url in gpus_newegg:
     
-    print(get_data_from_url(url))
+    data = get_data_from_url(url)
+    data_list.append(data)
+    
+write_csv(data_list)
