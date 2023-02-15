@@ -60,7 +60,7 @@ def get_data_from_url(url):
 
     data = {
         'product': product_name,
-        'price': f"${product_price.text}",
+        'price': product_price.text,
         'information': product_info,
         'url': url,
         'time': datetime.now()}
